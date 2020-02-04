@@ -9,6 +9,13 @@ module.exports = {
     ],
     sidebar: [
       ['/', 'Home'],
+      ['/fundamentals/', 'Fundamentals'],
+      ['/digital-io/', 'Digital IO'],
+      ['/timers/', 'Timers'],
+      ['/analog-io/', 'Analog IO'],
+      ['/uart/', 'UART'],
+      ['/i2c/', 'I²C'],
+      ['/spi/', 'SPI']
     ],
     repo: 'https://github.com/pcordemans/devbit-microcontrollers',
     docsDir: 'docs',

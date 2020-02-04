@@ -1,4 +1,6 @@
-# devbit microcontrollers
+# devbit Microcontrollers
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0896503c-e047-4fab-bd89-79d1d13b9822/deploy-status)](https://app.netlify.com/sites/microcontrollers/deploys)
 
 This is the repository of the microcontrollers course in the devbit curriculum of the VIVES university college.
 
