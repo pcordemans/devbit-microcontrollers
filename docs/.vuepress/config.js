@@ -10,6 +10,7 @@ module.exports = {
     sidebar: [
       ['/', 'Home'],
       ['/fundamentals/', 'Fundamentals'],
+      ['/cplusplus/', 'C++'],
       ['/digital-io/', 'Digital IO'],
       ['/timers/', 'Timers'],
       ['/analog-io/', 'Analog IO'],
