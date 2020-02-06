@@ -45,7 +45,7 @@ Figure 1: The Nucleo L476RG prototyping board
 ## Course materials
 
 * [Course website](https://microcontrollers.netlify.com/)
-* Lab website
+* [Lab website](https://lab-microcontrollers.netlify.com/)
 * Code examples on GitHub
 * [Toledo](https://www.vives.be/en/tools/toledo) (requires a VIVES login)
 * [MBED](https://www.mbed.com/en/)
