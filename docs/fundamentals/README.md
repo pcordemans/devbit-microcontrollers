@@ -10,6 +10,16 @@ title: Fundamentals
 > * What is the Stack & the Heap?
 > * What are typical constraints of an embedded system?
 
+## Embedded systems
+
+Embedded systems are electronic systems which perform a dedicated task. They consist typically of microprocessors, microcontrollers, ASICs or FPGAs. Typically an embedded system forms the intelligence of a machine, i.e. it makes everything *smart*. 
+
+For economic reasons, embedded systems tend to be fit for purpose. This means they cannot cost more than they should to perform their task. These systems are typically limited in 
+* Available memory 
+* Limited processing capabilities 
+* In case of battery powered systems, limited energy 
+* Or real-time constraints, where missing a deadline might effectively cause harm.
+
 ## Microprocessor
 
 A microprocessor is an electronic integrated circuit which consists of the Arithmetic and Logic Unit (ALU), registers, instruction fetch & decode circuitry and a memory interface.
@@ -24,9 +34,11 @@ Figure 1: a simplified microprocessor block schematic.
 * The memory interface is the electronic circuitry which provides communication, i.e. control, clock & data signals, towards the memory banks.
     * Data memory contains program data, the stack & the heap. Stack and heap are regions in memory with special rules.
     * Program memory contains the program binary, i.e. the program instructions.
+* Instruction fetch is electronic circuitry which fetches the next instruction to execute from the program memory.
+* The instruction decoder translates the instruction word in electric signals which drive the ALU and selects the required registers.
 
 ::: tip Harvard vs. Princeton / von Neumann
-In a Princeton (von Neumann) architecture, data and program memory are shared on a single memory. In a Harvard architecture data and program memory are separate memories. While the Harvard architecture is more complex and requires more busses, it performs better than the Princeton architecture. This is due to the von Neumann bottleneck, as data and program have to share the available bandwidth of the bus. 
+In a Princeton (von Neumann) architecture, data and program memory are shared on a single memory. In a Harvard architecture data and program memory are separate memories. While the Harvard architecture is more complex and requires more busses, it performs better than the Princeton architecture. This is due to the *von Neumann* bottleneck, as data and program have to share the available bandwidth of the bus. 
 
 ![Harvard vs. Princeton architecture](./assets/princeton-harvard.png)
 
@@ -34,8 +46,7 @@ Figure 2: The Harvard architecture separates program from data memory. The Princ
 
 :::
 
-* Instruction fetch is electronic circuitry which fetches the next instruction to execute from the program memory.
-* The instruction decoder translates the instruction word in electric signals which drive the ALU and selects the required registers.
+
 
 ::: tip Assembler & opcodes
 
@@ -118,6 +129,8 @@ The memory map is a set of addresses which defines the purpose of memory locatio
 
 ![Memory map example](./assets/memory-map.png)
 
+Figure 4: An example of a memory map. This is the address layout of the memory of a computer system.
+
 * *Memory-mapped I/O* is the interface between peripherals and the processor. From the viewpoint of the processor it can only write to and read from memory. Therefore memory locations are mapped on registers in peripherals, for example the *mode* register in the GPIOA peripheral is mapped to address **0x4800 0000**.
 * *Data memory* is organized in three sections:
     * **Static data** containing global variables and static variables.
@@ -126,8 +139,18 @@ The memory map is a set of addresses which defines the purpose of memory locatio
 
     ![SRAM organization](./assets/sram-organization.png)
 
+    Figure 5: Memory organization of SRAM, containing the Stack, the Heap and static data.
+
 * *Program memory* contains instructions and constant data. 
 * Interrupt vectors are memory locations which are predefined addresses to which the program counter can jump to when receiving a specific signal. For instance the reset vector is the first memory address loaded in the program counter after a power cycle, i.e. a reset. 
+
+::: tip Big-Endian and Little-Endian
+![Big Endian vs. Little Endian](./assets/endian.png)
+
+Figure 6: Big Endian vs. Little Endian.
+
+Memory is organized so that each byte is addressable. This means that each individual byte has its own address. When a word (32-bit value) is fetched from memory, individual bytes can be organized in the register in two ways. The Most Significant Byte can be found on the lowest address of the word, this system is called Big-Endian. Little-Endian had the Least Significant Byte on the lowest address of the word.
+:::
 
 ### Stack
 
@@ -135,14 +158,14 @@ The stack is a data memory region where data is stored according to a specific s
 
 ![Stack organization](./assets/stack.png)
 
+Figure 7: On the Stack, frames are pushed onto the Stack and popped from the Stack in a Last In First Out order (LIFO).
+
 The stack is organized in consecutive frames. Adding a frame is called pushing a frame on the stack. Removing a frame is called popping a frame. Frames are always pushed to or popped from the top of the stack. Therefore the stack is a so-called LIFO (Last In First Out) data structure. A frame is pushed when a function is called. At the end of the function the frame is popped. The active frame contains the execution context of the caller. This means that all local variables of the caller function are stored in the frame. When the callee is finished it restores the execution context of the caller.
 
-## Embedded systems
 
-Embedded systems are electronic systems which perform a dedicated task. They consist typically of microprocessors, microcontrollers, ASICs or FPGAs. Typically an embedded system forms the intelligence of a machine, i.e. it makes everything *smart*. 
+![Function calling convention](./assets/calltree.png)
 
-For economic reasons, embedded systems tend to be fit for purpose. This means they cannot cost more than they should to perform their task. These systems are typically limited in 
-* Available memory 
-* Limited processing capabilities 
-* In case of battery powered systems, limited energy 
-* Or real-time constraints, where missing a deadline might effectively cause harm.
+Figure 8: Each function call, executing another function call, receives its own frame on the stack to store its execution context. These are the local variables stored in registers, call parameters and the function's return address. 
+
+Recursive functions, i.e. a function which calls itself, get their own stack frame each time the function is called.
+
