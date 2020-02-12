@@ -4,6 +4,12 @@ title: C++
 
 # C++
 
+> * What are the steps in the compilation process of a C/C++ project?
+> * How can you manipulate variables at the bit level?
+> * What is a pointer?
+> * How can you use pointers?
+> * What does it mean to pass something by value or by reference?
+
 C is the most popular language to develop embedded software. C++ is often considered a superset of C, but this is not strictly true. 
 However, a subset of C++ can be used to write efficient and safe embedded software. Many C++ compilers support microcontroller architectures, for instance the [GNU Arm Embedded toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm) contains the arm-none-eabi-g++ compiler, an open source C++ compiler for ARM Cortex M and ARM Cortex R targets.
 
@@ -42,8 +48,27 @@ Figure 1: The C/C++ compiler toolchain consists of the preprocessor, the compile
 
 Dealing with registers, bits are often set, cleared, toggled and shifted. C/C++ does not offer a *bit* data type, however it is possible to perform these tasks using bitwise operations. 
 
+### Masking
+
+* Bitwise AND **&** is used for selecting bits in a word and clearing bits.
+* Bitwise OR **|** is used for merging bits in a word and setting bits.
+* Bitwise NOT **~** is used for the one's complement of a word.
+* Bitwise XOR **^** is used for toggling bits in a word.
+
+### Shifting
+
+* Right shift **>>** is used for shifting bits and division by a power of 2.
+* Left shift **<<** is used for shifting bits and multiply by a power of 2.
+
 ## Pointers
+
+A pointer is a variable which represents a memory address. Dereferencing means retrieving the value of the address to which the pointer refers. Pointers can point to pointers.
 
 ### By value or by reference
 
+Default calling convention in C/C++ is by value. Parameters can be passed by using the reference operator **&** or a pointer.
+
+### C/C++ arrays
+
+In C/C++ arrays are equivalent to pointers. The pointer is the address of the first index in the array. Indexing into an array corresponds with giving an offset to the pointer, i.e. memory address, and dereference that address, thus retrieving the value at the index in the array.
 
