@@ -44,21 +44,85 @@ Figure 1: The C/C++ compiler toolchain consists of the preprocessor, the compile
 3. The compiler or assembler translates the human readable code which has been preprocessed to produce binary files called object files (.o). For each source files a corresponding object file is created.
 4. The linker then takes all object files, including any pregenerated library files (.lib) and merges them into a single binary (.bin) file. Note that file extensions can differ. Actually when referring to a function in a source file, the compiler leaves the address of the function blank, until the linker decides where to put all the code. It then generates the correct addresses for the function calls.
 
+::: tip 
+C/C++ does not specify the exact size of integer variable types. For example, a C/C++ **int** should be at least 16 bits. It can be larger. Also integer types are by default signed. The **unsigned** keyword is used to indicate an unsigned integer value. 
+
+In order to avoid confusion use the specific width integral type aliases from the header **stdint.h**. Note: **stdint.h** is included in **mbed.h**.
+
+| Signed integer | Unsigned Integer | Width |
+| --- | --- | --- |
+| int8_t | uint8_t | 8 bits |
+| int16_t | uint16_t | 16 bits |
+| int32_t | uint32_t | 32 bits |
+| int64_t | uint64_t | 64 bits |
+
+An example:
+
+```cpp
+#include "stdint.h"
+
+int main() {
+    uint32_t value = 42;
+}
+```
+
+:::
+
 ## Bit Manipulation
 
 Dealing with registers, bits are often set, cleared, toggled and shifted. C/C++ does not offer a *bit* data type, however it is possible to perform these tasks using bitwise operations. 
 
 ### Masking
 
-* Bitwise AND **&** is used for selecting bits in a word and clearing bits.
-* Bitwise OR **|** is used for merging bits in a word and setting bits.
-* Bitwise NOT **~** is used for the one's complement of a word.
-* Bitwise XOR **^** is used for toggling bits in a word.
+Given a value, a binary operation is applied with a certain bit mask. The bit mask is used to select which bits should be affected by the binary operation and which not. In the following examples the value is ```0b1010 0101``` and the mask is ```0b1111 0000```. 
+
+* Bitwise AND **&** is used for selecting bits in a word and clearing bits. Every *0* in the mask clears the corresponding bit in the resulting value. Every *1* in the mask keeps the current value of the corresponding bit. An example:
+
+    ```cpp
+      0b1010 0101
+      0b1111 0000
+    & -----------
+      0b1010 0000
+    ```
+* Bitwise OR **|** is used for merging bits in a word and setting bits. Every *1* in the mask sets the corresponding bit in the resulting value. Every *0* in the mask does not affect the corresponding bit in the resulting value. An example:
+    ```cpp
+      0b1010 0101
+      0b1111 0000
+    | -----------
+      0b1111 0101
+    ```
+* Bitwise NOT **~** is used for the one's complement of a word. All bits are inverted. An example:
+
+    ```cpp
+      0b1010 0101
+    ~ -----------
+      0b0101 1010
+    ```
+* Bitwise XOR **^** is used for toggling bits in a word. A *1* bit in the mask toggles the corresponding bit in the resulting value. A *0* bit in the mask does not affect the resulting value. An example:
+
+    ```cpp
+      0b1010 0101
+      0b1111 0000
+    ^ -----------
+      0b0101 0101
+    ```
 
 ### Shifting
 
-* Right shift **>>** is used for shifting bits and division by a power of 2.
+A barrel shifter manipulates the position of the bits in a register. Bits are shifted left or right through the register, and *0* is shifted in the free positions.
+
+* Right shift **>>** is used for shifting bits and division by a power of 2. An example:
+    ```cpp
+      uint8_t value = 0b1010 0101;
+      uint8_t result = value >> 2;
+      //result == 0b0010 1001;       
+    ```
 * Left shift **<<** is used for shifting bits and multiply by a power of 2.
+    ```cpp
+      uint8_t value = 0b1010 0101;
+      uint8_t result = value << 1;
+      //result == 0b0100 1010;       
+    ```
 
 ## Pointers
 
