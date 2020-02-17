@@ -5,6 +5,7 @@ title: C++
 # C++
 
 > * What are the steps in the compilation process of a C/C++ project?
+> * What is the advantage of using fixed size types?
 > * How can you manipulate variables at the bit level?
 > * What is a pointer?
 > * How can you use pointers?
@@ -126,13 +127,178 @@ A barrel shifter manipulates the position of the bits in a register. Bits are sh
 
 ## Pointers
 
-A pointer is a variable which represents a memory address. Dereferencing means retrieving the value of the address to which the pointer refers. Pointers can point to pointers.
+A pointer is a variable which represents a memory address. 
 
-### By value or by reference
+![The pointer points at address 0xFFAA](./assets/pointer.png)
 
-Default calling convention in C/C++ is by value. Parameters can be passed by using the reference operator **&** or a pointer.
+Figure 2: In this example the pointer points at the data at memory address 0xFFAA.
+
+### Pointer syntax
+
+* A pointer is declared by adding an *asterisk* to the type the pointer should point at. ```uint32_t *p;``` is a pointer pointing at an unsigned 32 bit variable.
+* The address of a variable is retrieved by prefixing the variable with the reference operator, an *ampersand*. ```&x``` retrieves the address of the **x** variable. 
+* Retrieving the value pointed at by a pointer, is done with the dereference operator, an *asterisk*. ```*p``` retrieves the value pointed at by pointer **p**.
+
+An example:
+
+```cpp
+#include <iostream>
+#include "stdint.h"
+using namespace std;
+int main() 
+{
+    //declaration of x, an 32-bit unsigned integer variable
+    uint32_t x = 42;
+    
+    //declaration of p, a pointer to an 32-bit unsigned integer variable
+    uint32_t *p; 
+    
+    //assigning the address of x to p
+    p = &x;
+    
+    //printing the value of x to the stdout stream
+    cout << "value x: " << x << "\n";
+
+    //dereferencing the pointer 
+    //i.e. retrieving the value pointed at by the pointer and assign it to y
+    uint32_t y = *p;
+    cout << "value y: " << y << "\n";
+
+    //printing the value of the pointer, i.e. the address of variable x  
+    cout << "pointer: " << p << "\n";
+    
+    return 0;
+}
+```
+
+::: tip
+Pointers can point to pointers. An example:
+```cpp
+//variable x
+uint32_t x = 42;
+//pointer p points to x
+uint32_t *p = &x;
+//pointer ptop points to p 
+uint32_t **ptop = &p;
+
+//dereferencing twice
+cout << "value: " << **ptop << "\n";
+```
+![Figure representing the memory layout of the code example](./assets/pointerexample.png)
+
+Figure 3: Pointer **ptop** points to pointer **p** which in turn points to the variable **x**.
+:::
+
+### Function parameters: by value or by reference
+
+The default function calling convention in C/C++ is by value. This means the parameter of a function contains a copy of the variable value upon calling the function. When the function returns the original variable remains unchanged. 
+
+An example:
+
+```cpp
+/**
+  *  Squares x
+  *  @param x as a value 
+  **/
+void square(int32_t x){
+    x = x * x;  
+}
+
+int main() 
+{
+    
+    uint32_t x = 4;
+    square(x);
+
+    cout << "value: " << x << "\n"; //prints 4
+    
+    return 0;
+}
+```
+
+In order to change the variable which is used as paramter, it must be passed to the function by using the reference operator **&**. 
+
+An example:
+```cpp
+/**
+  *  Squares x
+  *  @param x as a reference 
+  **/
+void square(int32_t &x){
+    x = x * x;  
+}
+
+int main() 
+{
+    
+    int32_t x = 4;
+    
+    square(x);
+
+    cout << "value: " << x << "\n"; //prints 16
+    
+    return 0;
+}
+``` 
+::: warning
+By default pointers are passed by value, i.e. the pointer is copied as a parameter. However dereferencing the pointer in a function will change the value pointed to.
+
+```cpp
+/**
+  *  Squares the value pointed by x
+  *  @param x as a pointer 
+  **/
+void square(int32_t *x)
+{
+    //dereference x and assign to v
+    int v = *x;
+    v = v * v;
+    //assign the result to the variable pointed at by x
+    *x = v;
+}
+
+int main() 
+{
+    
+    int32_t x = 4;
+    
+    //call square with the address of x
+    square(&x);
+
+    cout << "value: " << x << "\n"; //prints 16
+    
+    return 0;
+}
+```
+
+:::
 
 ### C/C++ arrays
 
-In C/C++ arrays are equivalent to pointers. The pointer is the address of the first index in the array. Indexing into an array corresponds with giving an offset to the pointer, i.e. memory address, and dereference that address, thus retrieving the value at the index in the array.
+In C/C++ arrays are equivalent to pointers. Arrays are contiguous regions in memory. The pointer is the address of the first index in the array. Indexing into an array corresponds with giving an offset to the pointer, i.e. memory address, and dereference that address, thus retrieving the value at the index in the array.
 
+An example:
+
+```cpp
+#include <iostream>
+#include "stdint.h"
+using namespace std;
+
+int main() 
+{
+
+    int32_t array[] = {1, 2, 4, 8, 16};
+
+    int32_t *p = array;
+
+    cout << "value at position 2: " << array[2] << "\n"; //prints 4
+    cout << "value pointed at by p: " << *p << "\n"; // prints 1
+    cout << "value pointed at by p+2: " << *(p+2) << "\n"; // prints 4
+
+    return 0;
+}
+```
+
+![Figure representing the array code example.](./assets/array.png)
+
+Figure 4: Pointer p is identical to the array. The address is calculated by offsetting from the start of the array.
