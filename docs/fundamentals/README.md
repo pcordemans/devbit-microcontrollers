@@ -83,10 +83,12 @@ All ARM processors have a 32 bits or 64 bits architecture. Other processor vendo
 * The program counter is a register containing the memory address of the next instruction to be executed. In normal operation the program counter is incremented, thus selecting the next instruction in program memory. However, sometimes the program needs to perform a jump to another instruction. For instance, when executing an if-statement two instructions are potentially the next instruction to be executed:
 
     ```cpp
-    if(x == 42){
+    if(x == 42)
+    {
         //(1)
     }
-    else{
+    else
+    {
         //(2)
     }
     ```
@@ -96,7 +98,8 @@ All ARM processors have a 32 bits or 64 bits architecture. Other processor vendo
     Another example of a jump is a loop:
 
     ```cpp
-    while(x == 42){ // (1)
+    while(x == 42) // (1)
+    { 
         // (2)
     }
     // (3)
@@ -107,7 +110,8 @@ All ARM processors have a 32 bits or 64 bits architecture. Other processor vendo
     Finally executing a function call, makes the program counter jump to the memory address where the function has been defined.
 
      ```cpp
-    void f (int x){ //(1)
+    void f (int x)//(1)
+    { 
         //(2)
     }
 

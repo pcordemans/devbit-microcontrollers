@@ -62,7 +62,8 @@ An example:
 ```cpp
 #include "stdint.h"
 
-int main() {
+int main() 
+{
     uint32_t value = 42;
 }
 ```
@@ -200,7 +201,8 @@ An example:
   *  Squares x
   *  @param x as a value 
   **/
-void square(int32_t x){
+void square(int32_t x)
+{
     x = x * x;  
 }
 
@@ -224,7 +226,8 @@ An example:
   *  Squares x
   *  @param x as a reference 
   **/
-void square(int32_t &x){
+void square(int32_t &x)
+{
     x = x * x;  
 }
 
