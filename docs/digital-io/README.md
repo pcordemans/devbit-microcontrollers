@@ -13,7 +13,6 @@ title: Digital IO
 > * How are peripherals organized in data structures?
 > * What is the purpose of **volatile**?
 > * How can you make the microprocessor wait?
-
 > * How to debounce input switches?
 
 ## Nucleo board
@@ -22,18 +21,18 @@ title: Digital IO
 
 Figure 1: components on the Nucleo L476RG microcontroller board.
 
-The microcontroller board actually consists of two microcontrollers. The ST-LINK (green labels) programmer microcontroller provides an on-board programmer module for the STM32L476RG microcontroller (red labels). More information can be found in the [UM1724 User Manual ](https://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-mpu-eval-tools/stm32-mcu-mpu-eval-tools/stm32-nucleo-boards/nucleo-l476rg.html#resource).
+The microcontroller board actually consists of two microcontrollers. The ST-LINK (green labels) programmer microcontroller provides an on-board programmer module for the STM32L476RG microcontroller (red labels). More information can be found in the [UM1724 User Manual](https://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-mpu-eval-tools/stm32-mcu-mpu-eval-tools/stm32-nucleo-boards/nucleo-l476rg.html#resource).
 
 * ST-LINK
-    * Programmer: microcontroller providing USB communication to load the binary to the STM32L476RG microcontroller user flash. This is called In-System Programming. It also allows writing data into RAM. This allows for Serial Wire Debug (SWD). This is a protocol based on JTAG, a software/hardware interface for debugging.
-    * USB: mini-USB interface.
-    * Jumpers: are two or more pins which can be shorted by a jumper. These are used for hardware configuration settings. Connecting certain parts when a jumper is present or disconnecting them when the jumper is removed.
-    * Crystal: Provides a clock signal for the programmer microcontroller.
+  * Programmer: microcontroller providing USB communication to load the binary to the STM32L476RG microcontroller user flash. This is called In-System Programming. It also allows writing data into RAM. This allows for Serial Wire Debug (SWD). This is a protocol based on JTAG, a software/hardware interface for debugging.
+  * USB: mini-USB interface.
+  * Jumpers: are two or more pins which can be shorted by a jumper. These are used for hardware configuration settings. Connecting certain parts when a jumper is present or disconnecting them when the jumper is removed.
+  * Crystal: Provides a clock signal for the programmer microcontroller.
 * STM32L476RG
-    * LED: SMD user LED (set as a digital output)
-    * Button: joystick (used as a digital input)
-    * Arduino headers: physical connection to pins which follows the Arduino layout.
-    * Morpho headers: physical connection to pins which follows the Morpho layout.
+  * LED: SMD user LED (set as a digital output)
+  * Button: joystick (used as a digital input)
+  * Arduino headers: physical connection to pins which follows the Arduino layout.
+  * Morpho headers: physical connection to pins which follows the Morpho layout.
 
 ![The Arduino header.](./assets/arduino-headers.png)
 
@@ -55,7 +54,7 @@ Figure 4: The Intel 4004, the first microprocessor by Intel (1971 AD) chip die w
 
 ![Part of the Nucleo L476RG schematics.](./assets/nucleo-schematics.png)
 
-Figure 5: Microcontroller part of the Nucleo L476RG ([MB1136 schematics](https://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-mpu-eval-tools/stm32-mcu-mpu-eval-tools/stm32-nucleo-boards/nucleo-l476rg.html#resource)). This is a good reference design for using the microcontrollers, notice the crystal, capacitances and resistors. 
+Figure 5: Microcontroller part of the Nucleo L476RG ([MB1136 schematics](https://www.st.com/content/st_com/en/products/evaluation-tools/product-evaluation-tools/mcu-mpu-eval-tools/stm32-mcu-mpu-eval-tools/stm32-nucleo-boards/nucleo-l476rg.html#resource)). This is a good reference design for using the microcontrollers, notice the crystal, capacitances and resistors.
 
 ## GPIO
 
@@ -93,11 +92,13 @@ In Open-Drain, when the NMOS is not driven, the output is floating. When the NMO
 
 ### GPIO ports
 
-The STM32L476RG has 8 ports, which contain 16 bits each. Almost every pin on the microcontroller can be configured as GPIO, however, not every bit in a GPIO port is connected to a pin. The memory address can be of the peripherals can be found in the [STM32L476xx data sheet](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) Table 19 page 108 - 111.
+The STM32L476RG has 8 ports (A-H), which contain 16 bits each. Almost every pin on the microcontroller can be configured as GPIO, however, not every bit in a GPIO port is connected to a pin. The memory address can be of the peripherals can be found in the [STM32L476xx data sheet](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) Table 19 page 108 - 111.
+
+Each peripheral is connected to the peripheral bus. As a peripheral, a GPIO port must be enabled on the peripheral bus controller. The STM32L476RG has 5 peripheral bus controllers (AHB 1-3 and APB 1-2). More information can be found in the data sheet in chapters 6.4.16 to 6.4.21.
 
 ### GPIO registers
 
-When the microcontroller is reset all registers are set at their default value. Some registers are read only or write only. Each register is at a specific offset of the base peripheral address.
+When the microcontroller is reset all registers are set at their default value. Some registers are read only or write only. Each register is at a specific offset of the base peripheral address, this is important to write generic drivers for similar peripherals, i.e. a single driver for all GPIO ports.
 
 The GPIO registers in the STM32L476RG are the following:
 
@@ -115,3 +116,75 @@ The GPIO registers in the STM32L476RG are the following:
 * GPIO alternate function low and high registers: selects the alternate function.
 * GPIO port bit reset register (write only): resets the corresponding bit.
 * GPIO port analog switch control register: disconnect the analog switch (default state), or connect the switch to the ADC input.
+
+### Example
+
+This is the full low-level blinking led example on the NUCLEO-L476RG board. A more detailed explanation is given below.
+
+```cpp
+// includes low level peripheral definitions
+#include "stm32l476xx.h"
+
+/**
+ * Waits for an approximate number of milliseconds, this function blocks the CPU
+ * 
+ * @param milliseconds to wait
+ */
+void approx_wait(uint32_t milliseconds)
+{
+    for (uint32_t j = 0; j < milliseconds; j++)
+    {
+        for (volatile uint32_t i = 0; i < 4000; i++)
+            ;
+    }
+}
+
+int main()
+{
+    //Green led of the NUCLEO-L476RG is connected to PA5
+    //Enable GPIOA peripheral in the AHB2ENR: set bit 0
+    RCC->AHB2ENR |= 1;
+
+    // GPIOA_MODER set GP output mode for PA5: reset bit 11 & set bit 10
+    GPIOA->MODER &= ~(1<<11);
+    GPIOA->MODER |= 1 << 10;
+
+    // GPIOA_OTYPER pushpull: default after reset
+    // GPIOA_OSPEEDR low speed: default after reset
+    // GPIOA_PUPDR no pull-up / no pull-down: default after reset
+
+    while (true)
+    {
+        //GPIOA_BSRR set PA5: set bit 5
+        GPIOA->BSRR |= 1<< 5;
+        approx_wait(500);
+        //GPIOA_BSRR reset PA5: set bit 21
+        GPIOA->BSRR |= 1 << 21;
+        approx_wait(500);
+    }
+}
+```
+
+The *stm32l476xx.h* header file contains all low-level microcontroller specific definitions. These are the names of the peripheral's registers.Each peripheral in the microcontroller has its own **struct**. The arrow operator selects the register within the peripheral. For instance ```GPIOA->MODER```, GPIOA is the peripheral and MODER is its MODE register. 
+
+The *approx_wait* function is basically an empty for-loop to keep the processor busy. This is not an efficient way to program a microcontroller, but it works for our purposes. The value 4000 in the inner loop is related to the processor clock frequency. Each instruction to make a for-loop requires a clock cycle to execute. 4000 cycles in this for-loop takes about 1 millisecond. This must be verified and fine-tuned with an oscilloscope. Toggle a pin given a number of wait cycles and check if the corresponding timing is within the acceptable values.
+
+::: tip
+As the for-loop is empty, the compiler might decide to optimize the function. Of course this is not desirable for the *approx_wait*, as its sole purpose is to keep the processor from doing something useful. To signal the compiler this function may not be optimized the **volatile** keyword is used on the innermost loop variable. This keyword tells the compiler every instruction involving this variable must be executed.
+
+**volatile** is also used to define each of the peripheral registers. If the processor does not change a variable, it is not required to read it again. However, a register can be changed from the peripheral, thus subsequent read operations by the processor might yield different results.
+:::
+
+The main function can be divided in initialization code before the while loop and using the GPIO within the while loop. First the GPIOA peripheral must be enabled in the peripheral bus controller register. The position of the corresponding bit with the peripheral can be found in the data sheet page 252.
+
+::: warning
+Trying to write to or read from registers before the peripheral has been enabled will not work.  
+:::
+
+Then the pin is set as Digital Output. This must be done in the MODE register. Other registers can be configured as well, but the default values suit the example fine. More information in the data sheet pages 303-306.
+
+Finally, the Bit Set and Reset register is used to control the behavior of the pin.
+
+::: warning
+Output high requires writing a '1' in the corresponding bit of the register. Output low also requires writing a '1' in another bit of the register. After, the voltage level on the pin has changed, the '1' bit in the register is automatically cleared.  
+:::
