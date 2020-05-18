@@ -94,7 +94,7 @@ In Open-Drain, when the NMOS is not driven, the output is floating. When the NMO
 
 The STM32L476RG has 8 ports (A-H), which contain 16 bits each. Almost every pin on the microcontroller can be configured as GPIO, however, not every bit in a GPIO port is connected to a pin. The memory address can be of the peripherals can be found in the [STM32L476xx data sheet](https://www.st.com/en/microcontrollers-microprocessors/stm32l476rg.html) Table 19 page 108 - 111.
 
-Each peripheral is connected to the peripheral bus. As a peripheral, a GPIO port must be enabled on the peripheral bus controller. The STM32L476RG has 5 peripheral bus controllers (AHB 1-3 and APB 1-2). More information can be found in the data sheet in chapters 6.4.16 to 6.4.21.
+Each peripheral is connected to the peripheral bus. As a peripheral, a GPIO port must be enabled on the peripheral bus controller. The STM32L476RG has 5 peripheral bus controllers (AHB 1-3 and APB 1-2). More information can be found in the RM0351 Reference Manual in chapters 6.4.16 to 6.4.21.
 
 ### GPIO registers
 
@@ -175,13 +175,13 @@ As the for-loop is empty, the compiler might decide to optimize the function. Of
 **volatile** is also used to define each of the peripheral registers. If the processor does not change a variable, it is not required to read it again. However, a register can be changed from the peripheral, thus subsequent read operations by the processor might yield different results.
 :::
 
-The main function can be divided in initialization code before the while loop and using the GPIO within the while loop. First the GPIOA peripheral must be enabled in the peripheral bus controller register. The position of the corresponding bit with the peripheral can be found in the data sheet page 252.
+The main function can be divided in initialization code before the while loop and using the GPIO within the while loop. First the GPIOA peripheral must be enabled in the peripheral bus controller register. The position of the corresponding bit with the peripheral can be found in the RM0351 Reference Manual page 252.
 
 ::: warning
 Trying to write to or read from registers before the peripheral has been enabled will not work.  
 :::
 
-Then the pin is set as Digital Output. This must be done in the MODE register. Other registers can be configured as well, but the default values suit the example fine. More information in the data sheet pages 303-306.
+Then the pin is set as Digital Output. This must be done in the MODE register. Other registers can be configured as well, but the default values suit the example fine. More information in the RM0351 Reference Manual pages 303-306.
 
 Finally, the Bit Set and Reset register is used to control the behavior of the pin.
 
