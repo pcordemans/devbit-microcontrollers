@@ -64,7 +64,7 @@ TIM7 has 8 registers, see pages 1174-1178 of the RM0351.
 
 Configuring TIM7 requires the following steps:
 
-1. Enable TIM7 in AHB2ENR
+1. Enable TIM7 in APB1ENR1
 1. Set prescaler and match values
 1. Set event generation, re-initializing the timer counter upon the update event
 1. Start the timer
