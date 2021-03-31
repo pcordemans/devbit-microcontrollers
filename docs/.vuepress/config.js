@@ -13,6 +13,7 @@ module.exports = {
       ['/cplusplus/', 'C++'],
       ['/digital-io/', 'Digital IO'],
       ['/timers/', 'Timers'],
+      ['/interrupts/', 'Interrupts'],
       ['/analog-io/', 'Analog IO'],
       ['/uart/', 'UART'],
       ['/i2c/', 'I²C'],
