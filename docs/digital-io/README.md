@@ -188,3 +188,38 @@ Finally, the Bit Set and Reset register is used to control the behavior of the p
 ::: warning
 Output high requires writing a '1' in the corresponding bit of the register. Output low also requires writing a '1' in another bit of the register. After, the voltage level on the pin has changed, the '1' bit in the register is automatically cleared.  
 :::
+
+### Mbed Digital I/O
+
+The Mbed library provides three classes for digital I/O on pin level, namely [DigitalOut](https://os.mbed.com/docs/mbed-os/v6.15/apis/digitalout.html), [DigitalIn](https://os.mbed.com/docs/mbed-os/v6.15/apis/digitalin.html) and [DigitalInOut](https://os.mbed.com/docs/mbed-os/v6.15/apis/digitalinout.html).
+
+A simple example:
+
+```cpp
+#include "mbed.h"
+
+int main()
+{
+    // Creates a DigitalOut object and connects it to the pin with name LED1
+    DigitalOut led(LED1);
+           
+    // Writing 1 will put the DigitalOut pin at a logical high level (e.g. 3V3)
+    led.write(1);
+    ThisThread::sleep_for(500ms);
+
+    // Writing 0 will put the DigitalOut pin at a logical low level (e.g. GND)
+    led.write(0);     
+    ThisThread::sleep_for(500ms);
+           
+    // Shorthand notation for led.write(1);
+    led = 1;
+    
+
+    while (true) {
+        // Shorthand notation for led.write(!led.read());
+        led = !led;
+        ThisThread::sleep_for(500ms);
+        
+    }
+}
+```

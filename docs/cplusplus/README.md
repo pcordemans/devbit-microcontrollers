@@ -50,6 +50,8 @@ C/C++ does not specify the exact size of integer variable types. For example, a 
 
 In order to avoid confusion use the specific width integral type aliases from the header **stdint.h**. Note: **stdint.h** is included in **mbed.h**.
 
+Table 1: standard integer types
+
 | Signed integer | Unsigned Integer | Width |
 | --- | --- | --- |
 | int8_t | uint8_t | 8 bits |
@@ -305,3 +307,83 @@ int main()
 ![Figure representing the array code example.](./assets/array.png)
 
 Figure 4: Pointer p is identical to the array. The address is calculated by offsetting from the start of the array.
+
+## Classes
+
+C++ supports classes. In this course the focus is limited to using classes rather than defining them.
+
+In the subsequent examples the [DigitalOut](https://os.mbed.com/docs/mbed-os/v6.15/apis/digitalout.html) class of the Mbed library is used. A led object is created and a method is called to turn it on. However there are three possible places in memory where the object is stored and this will affect the way the objects are dealt with.
+
+Objects are created with a storage duration, depending on the context where they are created. The compiler will then place the object in the corresponding memory region. This also impacts how object's lifetime is managed. Table 2 shows the three possibilities.
+
+Table 2: storage duration, memory location & lifetime management
+
+| Storage duration | Memory location | Lifetime management |
+| --- | --- | --- |
+| Static storage | Static Memory | Global variable |
+| Automatic storage | the Stack | Lives by the stack frame |
+| Dynamic storage | the Heap | Manual call of the destructor |
+
+In the first example the constructor creates a led object as a global variable. The led object is created in static memory and is never cleaned up.
+
+```cpp
+
+#include "mbed.h"
+
+// Calls the constructor and creates the 'led' object in Static memory
+DigitalOut led(LED1);
+
+int main()
+{    
+    // Call the method write on the led object
+    led.write(1);
+}
+
+```
+
+In the second example the constructor creates a led object with automatic storage. The led object is created on the current stack frame and its destructor is automatically called when the stack frame is popped.
+
+```cpp
+
+#include "mbed.h"
+
+int main()
+{   
+    // Calls the constructor and creates the 'led' object in the main Stack frame
+    DigitalOut led(LED1); 
+    // Call the method write on the led object
+    led.write(1);
+}
+
+```
+
+In the third example the constructor creates a led object with dynamic storage. The led object is created on the Heap and its destructor has to be manually called.
+
+```cpp
+
+#include "mbed.h"
+
+int main()
+{   
+    // Calls the constructor and creates the 'led' object on the heap. 
+    // Note that the led variable is a pointer to a DigitalOut object
+    DigitalOut* led = new DigitalOut(LED1); 
+    
+    // Calls the method write on the led object requires the arrow operator 
+    // rather than the dot operator, because led is a pointer. 
+    // (*led).write(1); is the equivalent statement. 
+    // First dereferencing the pointer and then calling the method. 
+    // The arrow operator is a shorthand notation to do this.
+    led->write(1);    
+
+    // Calls the destructor
+    delete led;
+}
+
+```
+
+:::warning
+
+Creating an object with the **new** keyword always requires a statement where **delete** is called on the object. Otherwise the program will have a memory leak.
+
+:::
