@@ -4,6 +4,10 @@ title: SPI
 
 # SPI
 
+> * What is SPI?
+> * How is data transferred between a SPI controller and a peripheral?
+> * How can multiple peripherals be connected to a SPI bus?
+
 The Serial Peripheral Interface (SPI) is a 4-wire synchronous serial bus which allows for full duplex communication with a single controller. It is developed by Motorola and has become an industry standard. SPI is used to communicate between microcontrollers and peripherals in short-distance communication, either on a the PCB or between multiple PCB's.
 
 :::tip Signal names

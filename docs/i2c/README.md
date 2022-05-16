@@ -4,11 +4,18 @@ title: I²C
 
 # I²C
 
+> * What is I²C?
+> * How are devices connected to an I²C bus?
+> * Why are pull-up resistors need with an I²C bus?
+> * What are the parts of an I²C data frame?
+> * How does I²C bus arbitration work?
+> * How is data transferred over I²C?
+
 Inter-Integrated Circuit (I²C) is a serial communication standard by Philips, which became widely used in the industry. It's a two-wired, synchronous, bi-directional, multi-controller bus. It is used to communicate between microcontrollers and peripherals in short-distance communication, either on a the PCB or between multiple PCB's.
 
 ## Physical layer
 
-The I²C bus consists of two lines, Serial Data line (SDA) and Serial Clock Line (SCL). These lines are used in an open-drain configuration, i.e. all devices connect to the I²C bus with an Open Drain pin, which allows them to draw the line to ground, signalling a `0`. External pull-up resistors are provided for the default `1` state.
+The I²C bus consists of two lines, Serial Data line (SDA) and Serial Clock Line (SCL). These lines are used in an open-drain configuration, i.e. all devices connect to the I²C bus with an Open Drain pin, which allows them to draw the line to ground, signalling a `0`. External pull-up resistors are provided for the default `1` state. The value of these registers are in 90% of all cases 2K2.
 
 ![Example I²C bus with 3 devices](./assets/i2c-devices.png)
 
