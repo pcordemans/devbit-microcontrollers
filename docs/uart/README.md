@@ -4,39 +4,54 @@ title: UART
 
 # UART
 
-2 classes of devices
+## Universal Asynchronous Receiver Transmitter (UART)
 
-* Data Terminal Equipment (DTE)
-* Data Circuit-terminating Equipment (DCE)
+The Universal Asynchronous Receiver Transmitter (UART) is a hardware device for asynchronous serial communication. The UART communication protocol is already in use since the first computers to communicate with teletypewriters and modems.  
 
-Input in one type of device is output in the other & vice versa
+## RS-232
 
-Important pins
+RS-232 is a standard for the electrical specification and timing of serial communication of data.
+
+:::tip UART vs RS-232
+While RS-232 is the electrical and timing specification and UART is the hardware device, as these are often used in the same context, they are often incorrectly conflated.
+:::
+
+It defines communication between two devices, the Data Terminal Equipment (DTE) and the Data Circuit-terminating Equipment (DCE). The UART device does not need to adhere to the RS-232 standard, other standards such as RS-485. Input in one type of device is output in the other & vice versa. Although RS-232 has defined a lot of functionality, it can be reduced to a 3-wire protocol:
 
 * TxD: Transmit
 * RxD: Receive
 * Common Ground
 
-The UART standard also defines other pins for flow control (see DB9 connector).
+![RS-232 TxD, RxD and GND between DCE and DTE](./assets/rs-232.png)
 
-Bit rates: 75, 110, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, ...
+As the TxD and RxD of each device are connected to eachother, full duplex communication is possible. However, this is not a typical use-case in UART communication, and messages are typically sent consequently. The RS-232 standard also defines other pins for flow control. However, these are optional.
 
-RS232 standard defines voltage levels:
+RS-232 also defines standard connectors, DB9 was the most commonly used for the serial port of a computer.
 
-* `1` = -3V to -25V
-* `0` = 3V to 25V
+![By Mayayu - Own work, CC BY-SA 3.0, https://commons.wikimedia.org/w/index.php?curid=20280300](./assets/db9.png)
 
-## Universal Asynchronous Receiver Transmitter (UART)
+A serial cable for the DB9 connector is typically a crossover for communication between a DCE and a DTE. However, for communication between two devices of the same type a *null modem* cable was used.
 
-A UART is a piece of hardware used to IMPLEMENT RS-232 (though there have been UARTs used for other protocols as well). ... RS232 is a serial communication protocol, a UART (Universal Asynchronous Receiver Transmitter) is a hardware device to implement serial communications.
+RS-232 standard defines voltage levels:
 
-* Half or full duplex
-* Physical layer: Frame: 1 start bit, 8 data bits, 1 optional parity bit, 1 stop bit
-* 8N1 (without parity) -> 1 ASCII character per 10 Bd/s
-* Some devices might send a different number of data and stop bits
-* LSB first
+* `1` = -3V to -15V
+* `0` = 3V to 15V
 
-![](./assets/uart-bits.png)
+As this include negative voltage levels, typically a level converter IC is used to connect a microcontroller to the serial bus. An example of such an IC is the MAX232.
+
+## UART communication
+
+Data frames in UART are defined by the start bit and 1 or more stop bits. It also allows for a parity bit. This is a checksum of the data bits which allows to detect bit errors. Data is sent over the UART with the Least Significant Bit (LSB) first.
+
+![UART data frame](./assets/uart-bits.png)
+
+Although some devices might send a different number of data and stop bits, most of the times the UART communication protocol is defined by **8N1**. This stands for 8 data bits, no parity and 1 stop bit. With 8N1, the effective data, namely ASCII characters, are sent with 10 Baud.
+
+:::tip Bit rate and Baud rate
+In UART communication the communication speed is typically defined as a certain Baud rate. The Baud rate is the frequency at which the data symbols are sent from the transmitter, defined as a number of symbols per second. As the digital data is sent without any encoding the Baud rate is essentially the same as the bit rate. Namely the bit is the symbol being sent.
+:::
+
+Typical Baud rates are: 75, 110, 300, 1200, 2400, 4800, 9600, 19200, 38400, 57600 and 115200.
 
 ## Synchronization
 
@@ -45,7 +60,7 @@ Starting in the idle state the receiver *samples* its RX signal until it detects
 
 Successful extraction of the data from a frame requires that, over 10.5 bit periods, the drift of the receiver clock relative to the transmitter clock be less than 0.5 periods in order to correctly detect the stop bit.
 
-![](./assets/receival.png)
+![UART synchronization](./assets/receival.png)
 
 ## Serial Communication with Mbed
 
@@ -70,7 +85,7 @@ To transmit multiple bytes, the class uses an intermediary buffer to store the b
 For writing to a `BufferedSerial` device, the `write()` function can be used. To fill the buffer with data, the `sprintf` function that works just like `printf` can be used. It accepts the same formatters but will write its output to a buffer instead of standard output. `sprintf` will also return the number of bytes written to the buffer.
 
 ::: warning Writing to Console
-For demonstrational purpose we are using the USB UART here but it can be any UART port of the mbed system
+For demonstration purposes we are using the USB UART here but it can be any UART port of the mbed system
 :::
 
 ```cpp
@@ -112,7 +127,7 @@ Hello World 123
 Reading from a `BufferedSerial` is also quitte straight-forward using the `read()` function. It accepts a buffer and tries to fill it with the received data.
 
 ::: warning Reading from Console
-For demonstrational purpose we are using the USB UART here but it can be any UART port of the mbed system
+For demonstration purposes we are using the USB UART here but it can be any UART port of the mbed system
 :::
 
 ```cpp
