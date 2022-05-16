@@ -25,7 +25,7 @@ Two exceptions to this rule exist, signifying special conditions in I²C communi
 
 ![Start and stop condition](./assets/start-stop.png)
 
-The state of the bus is known as *busy* after **S** before **P** and *free* after **P** before **S**.
+The controller is responsible to generate the start and stop condition, as well as generating the signal on SCL. The state of the bus is known as *busy* after **S** before **P** and *free* after **P** before **S**.
 
 ## Bus arbitration
 
