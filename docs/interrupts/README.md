@@ -4,6 +4,14 @@ title: Interrupts
 
 # Interrupts
 
+> * What is an interrupt?
+> * What is an ISR?
+> * What does the NVIC do?
+> * What is context saving?
+> * What is an exception?
+> * How is an interrupt acknowledged?
+> * What is the difference between interrupts and polling?
+> * What is the general control flow before, during and after an interrupt?
 
 In the previous example, the processor is continuously checking whether the interrupt flag has been set. This is not an efficient use of processor cycles. In an ideal world, the processor would be spending its processing cycles on something else and would be notified when the timer is done.
 

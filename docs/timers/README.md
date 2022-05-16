@@ -4,6 +4,10 @@ title: Timers
 
 # Timers
 
+> * What are the functions of a timer?
+> * What are the components of a timer?
+> * What is the relationship between the precaler, the count and the match register?
+
 Every microcontroller has timer peripherals. Timers are used to generate precision timing events, which do not involve the processor. In order to achieve this, interrupts are used.
 
 ## Basic Timer

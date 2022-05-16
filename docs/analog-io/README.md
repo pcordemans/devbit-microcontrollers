@@ -4,6 +4,18 @@ title: Analog IO
 
 # Analog IO
 
+> * What is a DAC?
+> * What are important characteristics of Vref?
+> * What is the relation between the digital value and the output voltage of a DAC?
+> * What is the maximum output voltage of a DAC?
+> * What is an ADC?
+> * What does Shannon's sampling theorem determine?
+> * What is the relation between the digital value and the input voltage of an ADC?
+> * What is a quantization error?
+> * How does a SAR ADC operate?
+> * What is PWM?
+> * What is the relation between frequency and duty cycle of a PWM signal?
+
 A digital microcontroller interfaces with the analog world using specific peripherals called Analog-to-Digital Converters (ADC), and vice versa Digital-to-Analog Converters (DAC). Typically, most microcontrollers have one or more of these peripherals. Also, a digital means of interfacing with the analog world is also used widely, so called Pulse-Width Modulation (PWM).
 
 ## Digital-to-Analog Converter

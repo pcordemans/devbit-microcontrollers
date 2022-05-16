@@ -4,6 +4,13 @@ title: UART
 
 # UART
 
+> * What is an UART?
+> * What is RS-232?
+> * How are the UART pins connected?
+> * What are the voltage levels of RS-232?
+> * What are the parts of an UART data frame?
+> * What is a Baud rate?
+
 ## Universal Asynchronous Receiver Transmitter (UART)
 
 The Universal Asynchronous Receiver Transmitter (UART) is a hardware device for asynchronous serial communication. The UART communication protocol is already in use since the first computers to communicate with teletypewriters and modems.  
